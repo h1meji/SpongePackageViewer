@@ -8,7 +8,7 @@
   const DB = {
     open() {
       return new Promise((res, rej) => {
-        const r = indexedDB.open('packet-viewer', 1);
+        const r = indexedDB.open('sponge-package-viewer', 1);
         r.onupgradeneeded = () => r.result.createObjectStore('kv');
         r.onsuccess = () => res(r.result);
         r.onerror = () => rej(r.error);

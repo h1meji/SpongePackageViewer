@@ -1,4 +1,4 @@
-/* Packet Viewer processing worker.
+/* Sponge Package Viewer processing worker.
    Receives {file, options} and posts back {type:'done', data, assets}.
    Everything happens inside this browser tab — nothing is sent anywhere. */
 'use strict';

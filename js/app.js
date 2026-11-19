@@ -1,4 +1,4 @@
-/* Packet Viewer — renders window.DATA produced by build.py */
+/* Sponge Package Viewer — renders window.DATA produced by js/worker.js */
 'use strict';
 const D = window.DATA;
 
@@ -818,9 +818,9 @@ function treeNode(key, v, open, depth) {
 if (D) {
   window.closeModal = closeModal;
   const sm = $('#streamer');
-  try { sm.checked = localStorage.getItem('pv-streamer') === '1'; } catch { }
+  try { sm.checked = localStorage.getItem('spv-streamer') === '1'; } catch { }
   document.body.classList.toggle('streamer', sm.checked);
-  sm.onchange = () => { document.body.classList.toggle('streamer', sm.checked); try { localStorage.setItem('pv-streamer', sm.checked ? '1' : '0'); } catch { } };
+  sm.onchange = () => { document.body.classList.toggle('streamer', sm.checked); try { localStorage.setItem('spv-streamer', sm.checked ? '1' : '0'); } catch { } };
   $('#gen').textContent = 'Processed ' + fmtDate(Date.parse(D.generated)) + ' · stored only in this browser';
   $('#menu').onclick = () => $('#side').classList.toggle('open');
   window.addEventListener('hashchange', route);

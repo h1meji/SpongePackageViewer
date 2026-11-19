@@ -1,4 +1,4 @@
-# Packet Viewer
+# 🧽 Sponge Package Viewer
 
 **See everything Discord knows about you.** Drop your Discord data package (`package.zip`) into the page and get a searchable report of every message, person, server, device, location and tracked event.
 
