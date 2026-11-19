@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data: blob:; media-src * data: blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Packet Viewer</title>
+<meta name="description" content="Explore your Discord data package (package.zip) in your browser. Nothing is uploaded — all processing happens locally on your device.">
+<meta property="og:title" content="Packet Viewer — your Discord data, unpacked">
+<meta property="og:description" content="Drop your Discord package.zip and explore every message, server, device and tracked event. 100% local, nothing is uploaded.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect rx='8' width='32' height='32' fill='%236d5dfc'/><path d='M9 11h14v8a4 4 0 0 1-4 4h-6a4 4 0 0 1-4-4z' fill='white'/><circle cx='13' cy='16' r='1.6' fill='%236d5dfc'/><circle cx='19' cy='16' r='1.6' fill='%236d5dfc'/></svg>">
+</head>
+<body class="landing-mode">
+<div id="bg"></div>
+
+<!-- ================= LANDING ================= -->
+<section id="landing">
+  <header class="l-nav">
+    <div class="brand"><div class="logo"></div><div><b>Packet Viewer</b><small>your Discord data, unpacked</small></div></div>
+    <div class="spacer"></div>
+    <a href="#how" class="l-link">How it works</a><a href="#privacy" class="l-link">Privacy</a><a href="#faq" class="l-link">FAQ</a>
+  </header>
+
+  <div class="l-hero">
+    <div class="l-copy">
+      <span class="chip a">🔒 100% local — your data never leaves your device</span>
+      <h1 class="l-title">See everything Discord<br><span class="grad-text">knows about you.</span></h1>
+      <p class="l-sub">Drop your Discord data package and get a beautiful, searchable report: every message you sent, who you talk to, where you've been, the devices you used, and the <b>millions of events</b> Discord logged about you.</p>
+      <div class="l-points">
+        <span>💬 Read & search every message</span><span>📡 Explore all tracked telemetry</span><span>📍 Cities, IPs & devices</span><span>🎮 Playtime, voice & Spotify</span>
+      </div>
+    </div>
+
+    <div class="l-drop-wrap">
+      <div id="drop" class="drop" tabindex="0" role="button" aria-label="Choose your package.zip">
+        <input type="file" id="file" accept=".zip,application/zip,application/x-zip-compressed" hidden>
+        <div class="drop-ic">📦</div>
+        <b>Drop your <span class="code">package.zip</span> here</b>
+        <span class="muted small">or click to choose it · any size, multi-GB packages are fine</span>
+        <label class="toggle small" onclick="event.stopPropagation()" style="margin-top:14px"><input type="checkbox" id="opt-activity" checked><span></span>Include telemetry scan <span class="dim">(slower, the best part)</span></label>
+      </div>
+      <div id="prog" class="drop prog" hidden>
+        <div class="row" style="width:100%"><b id="prog-stage">Opening package…</b><div class="spacer"></div><span id="prog-pct" class="num muted">0%</span></div>
+        <div class="pbar"><i id="prog-bar"></i></div>
+        <div id="prog-detail" class="dim small mono" style="width:100%;text-align:left;min-height:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+        <div class="steps" id="prog-steps"></div>
+        <p class="muted small" style="margin:6px 0 0">Processing happens in this tab. You can keep using your computer — just don't close the page.</p>
+        <button class="btn" id="prog-cancel">Cancel</button>
+      </div>
+      <div id="saved" class="saved" hidden></div>
+      <div id="err" class="note err" hidden></div>
+    </div>
+  </div>
+
+  <div class="l-section" id="how">
+    <h2 class="l-h">How it works</h2>
+    <div class="grid g3">
+      <div class="card"><div class="step-n">1</div><h3 class="l-h3">Request your data</h3><p class="muted">In Discord: <b>User Settings → Data & Privacy → Request all of my Data</b>. Discord emails you a download link (can take a few days, up to 30).</p></div>
+      <div class="card"><div class="step-n">2</div><h3 class="l-h3">Drop the zip here</h3><p class="muted">Don't unzip it. Your browser reads the file straight from your disk — streaming even multi-gigabyte telemetry files without uploading a single byte.</p></div>
+      <div class="card"><div class="step-n">3</div><h3 class="l-h3">Explore</h3><p class="muted">Get dashboards for messages, people, servers, telemetry, locations, games and billing. The report is cached in your browser so you can come back later.</p></div>
+    </div>
+  </div>
+
+  <div class="l-section">
+    <h2 class="l-h">What's inside your report</h2>
+    <div class="feat-grid">
+      <div class="feat"><span>✦</span><b>Wrapped-style overview</b><p>Fun facts, longest streaks, favourite words and a timeline of your entire Discord life.</p></div>
+      <div class="feat"><span>💬</span><b>Message browser & search</b><p>Read every channel like in Discord, with full-text and regex search across all your messages.</p></div>
+      <div class="feat"><span>👥</span><b>People</b><p>Friends, blocks, DMs ranked by how much you talk, and how relationships evolved over time.</p></div>
+      <div class="feat"><span>🏰</span><b>Servers</b><p>Activity per server, your folders, audit-log actions, emoji, webhooks and mute settings.</p></div>
+      <div class="feat"><span>📡</span><b>Telemetry explorer</b><p>Every event type Discord tracked, with timelines, heatmaps, experiments and sample payloads.</p></div>
+      <div class="feat"><span>📍</span><b>Places & devices</b><p>Cities over time, IPs, ISPs, phones, PCs, browsers and login sessions.</p></div>
+      <div class="feat"><span>🎧</span><b>Games, voice & music</b><p>Playtime per game, hours in voice, streams, and the Spotify tracks in your status.</p></div>
+      <div class="feat"><span>💎</span><b>Billing, orbs & quests</b><p>Payments, gifts, orb balance history, quests and the ad traits attached to your account.</p></div>
+    </div>
+  </div>
+
+  <div class="l-section" id="privacy">
+    <div class="card glow privacy">
+      <div class="privacy-ic">🔒</div>
+      <div>
+        <h2 class="l-h" style="margin-top:0">Your package never leaves your computer</h2>
+        <ul class="muted">
+          <li>This is a static website with no backend. There is no server to upload to.</li>
+          <li>The zip is read and processed by JavaScript running in your own browser tab (a Web Worker).</li>
+          <li>A strict Content-Security-Policy blocks the page from sending data anywhere (<span class="code">connect-src 'self'</span>).</li>
+          <li>The finished report is stored only in your browser (IndexedDB) and can be deleted with one click.</li>
+          <li>The only outbound requests are images: avatars and custom emoji from Discord's CDN and attachment / GIF previews.</li>
+          <li>Open source — read the code, or download the repo and run it offline.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="l-section" id="faq">
+    <h2 class="l-h">FAQ</h2>
+    <details class="faq"><summary>How long does processing take?</summary><p>Messages, servers and account data take seconds. The telemetry scan reads every tracked event (often several GB) and typically takes 1–5 minutes depending on your device. You can turn it off for a quick look.</p></details>
+    <details class="faq"><summary>Why are only my own messages shown?</summary><p>Discord's data package only includes messages you sent. Messages from other people aren't part of your package.</p></details>
+    <details class="faq"><summary>Which browsers work?</summary><p>Any recent Chrome, Edge, Firefox or Safari (2023+). It needs <span class="code">DecompressionStream</span>, which all modern browsers support.</p></details>
+    <details class="faq"><summary>Some names show as "Unknown" or "Server 1234…"</summary><p>The package only contains IDs for some servers, channels and games. When Discord didn't include a name anywhere, the ID is shown instead.</p></details>
+    <details class="faq"><summary>Is this affiliated with Discord?</summary><p>No. This is an independent, open-source tool that reads the data package Discord gives you.</p></details>
+  </div>
+  <footer class="l-foot muted small">Packet Viewer · not affiliated with Discord · everything runs locally in your browser</footer>
+</section>
+
+<!-- ================= APP ================= -->
+<aside id="side" hidden>
+  <div class="brand">
+    <div class="logo"></div>
+    <div><b>Packet Viewer</b><small>your Discord data, unpacked</small></div>
+  </div>
+  <nav id="nav"></nav>
+  <div class="side-foot">
+    <label class="toggle" title="Blur emails, phone numbers, IPs and other sensitive values"><input type="checkbox" id="streamer"><span></span>Streamer mode</label>
+    <button class="btn small" id="newpkg" style="margin-top:12px;width:100%">↺ Load another package</button>
+    <div id="gen" class="muted tiny" style="margin-top:8px"></div>
+  </div>
+</aside>
+<button id="menu" aria-label="Menu" hidden>☰</button>
+<main id="main" hidden><div class="loading">Loading your data…</div></main>
+<div id="tip"></div>
+<div id="modal" hidden><div class="modal-card"><button class="x" onclick="closeModal()">✕</button><div id="modal-body"></div></div></div>
+<script src="js/charts.js"></script>
+<script src="js/loader.js"></script>
+</body>
+</html>
